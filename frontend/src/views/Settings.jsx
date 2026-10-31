@@ -22,6 +22,7 @@ import { pushSupported, enablePush, disablePush, sendTestPush, syncPushSubscript
 import { wakeLockSupported } from '../lib/wakelock.js'
 import { t, tn, LANGS, INSTR_LANGS, EXERCISE_NAME_LANGS, baseLang, dateLocale } from '../lib/i18n.js'
 import { effectiveLang } from '../lib/default-lang.js'
+const LOCAL_ONLY = import.meta.env.VITE_LOCAL === '1'   // the static personal build (lib/demo.js)
 import { DEMO, REPO } from '../lib/demo.js'
 import { MOBILE, isAndroid, shareExport, shareExportBlob, syncReminder } from '../lib/mobile.js'
 import { NUDGE_COPY, NUDGE_TONES, toneOf } from '../lib/nudge.js'
@@ -843,6 +844,9 @@ export default function Settings({ page = null, find = null, via = null, entryKe
             ))}
           </div>
         </div>
+        <Row icon="sparkles" iconTint="var(--green)" title={t('Simple view')} subtitle={t('Only the essentials on Home, Stats and Exercises.')}>
+          <Switch aria-label={t('Simple view')} checked={S.simple ?? LOCAL_ONLY} onChange={v => update(s => { s.simple = v })} />
+        </Row>
         <Row icon="bolt" iconTint="var(--orange)" title={t('Animations')}>
           <Segmented
             className="seg-inline"
@@ -1154,13 +1158,13 @@ function SettingsRoot({ ctx, preview, open, user, sync, home, go, entryKey }) {
         <Row key={h.page + ':' + h.title} icon={h.icon} iconTint={h.tint} title={h.label} subtitle={h.trail} accessory="chevron" onClick={() => go(h)} />
       ))}
     </Section> : <div className="sp-empty">{t('No setting matches “{0}”.', q.trim())}</div>) : <>
-      <Section>
+      {!LOCAL_ONLY && <Section>
         <button className="lrow tap sp-acct" onClick={() => open('account')}>
           <span className={'sp-avatar' + (initial ? ' on' : '')} aria-hidden="true">{initial || <Icon name="personCircle" />}</span>
           <span className="lrow-m"><span className="lrow-t">{acct.title}</span><span className="lrow-s">{acct.sub}</span></span>
           <Icon name="chevronRight" className="lrow-c" />
         </button>
-      </Section>
+      </Section>}
       {ROOT_GROUPS.map(g => g.filter(id => pageVisible(id, ctx))).filter(g => g.length).map(g => (
         <Section key={g[0]}>
           {g.map(id => <Row key={id} icon={PAGES[id].icon} iconTint={PAGES[id].tint} title={t(PAGES[id].title)}

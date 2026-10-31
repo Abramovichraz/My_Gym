@@ -475,6 +475,7 @@ export default function Stats() {
   const nav = useNavigate()
   const S = useStore(s => s.S)
   const [range, setRange] = useState(90)
+  const [more, setMore] = useState(false)
   // Plan's "Weekly muscle volume" row lands here (/stats?focus=weekly-volume). The router is a
   // HashRouter, so the query sits in the hash; the scroll waits a frame for the page's own
   // scroll-to-top on navigation to have happened first.
@@ -720,23 +721,8 @@ export default function Stats() {
   if (showMax) exOpts.push({ value: 'max', label: t('Max reps') })
   if (showRel) exOpts.push({ value: 'bodyweight', label: t('Bodyweight') })
 
-  return <>
-    <div className="hdr"><SeasonDeco spot="stats-hdr" /><div><h1>{t('Stats')}</h1><div className="sub">{t('Progress & history')}</div></div>
-      <div className="row" style={{ gap: 8 }}>
-        <button className="iconbtn" onClick={reportSheet} aria-label={t('Performance report')} title={t('Performance report')}><Icon name="note" /></button>
-        <button className="iconbtn" onClick={() => nav('/history')} aria-label={t('History')}><Icon name="history" /></button>
-      </div></div>
-
-    <div className="tiles">
-      <div className="tile"><div className="l"><Icon name="dumbbell" />{t('Workouts')}</div><div className="v">{workouts.length}</div></div>
-      <div className="tile"><div className="l"><Icon name="calendar" />{t('This month')}</div><div className="v">{monthW}</div></div>
-      <div className="tile"><div className="l"><Icon name="flame" />{t('Week streak')}</div><div className="v">{streakWeeks(S)}</div></div>
-      <div className="tile"><div className="l"><Icon name="scale" />{t('Weight 30d')}</div><div className="v" style={{ fontSize: 22, color: bwDelta30 === null ? 'inherit' : bwDeltaColor(bwDelta30, (lastBW(S) || {}).w || 0) }}>{bwDelta30 === null ? '–' : (bwDelta30 > 0 ? '+' : '') + fmtNum(bwDelta30) + ' ' + S.unit}</div></div>
-      {/* Everything ever lifted (Discord): imports included, warm-ups only when the profile
-          counts them (#719). Full width, since a few hundred sessions make a long number. */}
-      {lifetime > 0 && <div className="tile" style={{ gridColumn: '1 / -1' }} data-lifetime-volume><SeasonDeco spot="stats-tile" /><div className="l"><Icon name="plate" />{t('Lifted in total')}</div><div className="v">{fmtVol(Math.round(lifetime), S.unit)}</div></div>}
-    </div>
-
+  const simple = S.simple ?? (import.meta.env.VITE_LOCAL === '1')   // on by default in the personal build only
+  const advanced = <>
     <div className="card">
       <SeasonDeco spot="stats-heatmap" />
       <h2>{t('Activity (last 12 months)')}</h2>
@@ -769,6 +755,25 @@ export default function Stats() {
       <Button size="sm" variant="tinted" trailingIcon="chevronRight" style={{ flexShrink: 0 }} onClick={() => nav('/measurements')}>{t('Open')}</Button>
     </div>
     {(hasEffort(S) || hasEstimableEffort(S)) && <EffortCard S={S} />}
+  </>
+  return <>
+    <div className="hdr"><SeasonDeco spot="stats-hdr" /><div><h1>{t('Stats')}</h1><div className="sub">{t('Progress & history')}</div></div>
+      <div className="row" style={{ gap: 8 }}>
+        <button className="iconbtn" onClick={reportSheet} aria-label={t('Performance report')} title={t('Performance report')}><Icon name="note" /></button>
+        <button className="iconbtn" onClick={() => nav('/history')} aria-label={t('History')}><Icon name="history" /></button>
+      </div></div>
+
+    <div className="tiles">
+      <div className="tile"><div className="l"><Icon name="dumbbell" />{t('Workouts')}</div><div className="v">{workouts.length}</div></div>
+      <div className="tile"><div className="l"><Icon name="calendar" />{t('This month')}</div><div className="v">{monthW}</div></div>
+      <div className="tile"><div className="l"><Icon name="flame" />{t('Week streak')}</div><div className="v">{streakWeeks(S)}</div></div>
+      <div className="tile"><div className="l"><Icon name="scale" />{t('Weight 30d')}</div><div className="v" style={{ fontSize: 22, color: bwDelta30 === null ? 'inherit' : bwDeltaColor(bwDelta30, (lastBW(S) || {}).w || 0) }}>{bwDelta30 === null ? '–' : (bwDelta30 > 0 ? '+' : '') + fmtNum(bwDelta30) + ' ' + S.unit}</div></div>
+      {/* Everything ever lifted (Discord): imports included, warm-ups only when the profile
+          counts them (#719). Full width, since a few hundred sessions make a long number. */}
+      {lifetime > 0 && <div className="tile" style={{ gridColumn: '1 / -1' }} data-lifetime-volume><SeasonDeco spot="stats-tile" /><div className="l"><Icon name="plate" />{t('Lifted in total')}</div><div className="v">{fmtVol(Math.round(lifetime), S.unit)}</div></div>}
+    </div>
+
+    {!simple && advanced}
 
     <div className="cols">
       <div className="card">
@@ -862,5 +867,10 @@ export default function Stats() {
       </div>
       <div className="list">{[...workouts].reverse().slice(0, 6).map(w => <WorkoutRow key={w.id} w={w} onClick={() => workoutDetailSheet(w)} />)}</div>
     </>}
+    {/* Simple view (Settings → Look & Home): the everyday three first, the deep dives on request */}
+    {simple && <button className="btn tinted" style={{ margin: '12px 0' }} onClick={() => setMore(v => !v)}>
+      {more ? t('Fewer stats') : t('More stats')}<Icon name={more ? 'chevronUp' : 'chevronDown'} />
+    </button>}
+    {simple && more && advanced}
   </>
 }

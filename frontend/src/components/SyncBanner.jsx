@@ -56,7 +56,7 @@ export const showsConnection = S => S?.connStatus !== false
 // The quiet "no server" line (#454): a phone kept local or a guest has chosen that, and a line
 // saying so on every screen, for good, is a nag. Its × sets this off; offline, an error or a
 // refusal still show, since only the 'quiet' tone is ever hidden by it.
-export const showsLocalLine = S => S?.connLocal !== false
+export const showsLocalLine = S => import.meta.env.VITE_LOCAL !== '1' && S?.connLocal !== false
 
 /* True while the banner is switched off and the connection has a problem worth seeing: offline,
    the server unreachable or answering with an error, refusing this device, a sign-in question

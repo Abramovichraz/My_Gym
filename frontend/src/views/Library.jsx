@@ -19,6 +19,7 @@ import { isFav, sortFavouritesFirst, sortYoursFirst, usageOf } from '../lib/favo
 export default function Library() {
   const nav = useNavigate()
   const S = useStore(s => s.S)
+  const [moreF, setMoreF] = useState(false)
   const [q, setQ] = useState('')
   const [bp, setBp] = useState('')
   const [eq, setEq] = useState('')
@@ -67,6 +68,8 @@ export default function Library() {
     </div>
   }
 
+  const simple = S.simple ?? (import.meta.env.VITE_LOCAL === '1')
+  const showF = !simple || moreF || !!catOn || !!eqOn
   return <>
     <div className="hdr lib-hdr"><div><h1>{t('Exercises')}</h1></div>
       <Button size="sm" variant="tinted" icon="figureStrength" onClick={() => nav('/muscles')}>{t('By muscle')}</Button>
@@ -92,12 +95,13 @@ export default function Library() {
     <div className="chips" ref={bpStrip} style={{ marginBottom: eqOpts.length > 1 || catOpts.length > 1 ? 8 : 12 }}>
       <button className={'chip nocap' + (!bp ? ' on' : '')} onClick={() => { setBp(''); setEq(''); setShown(40) }}>{t('All')}</button>
       {BODYPARTS.map(b => <button key={b} className={'chip' + (bp === b ? ' on' : '')} onClick={() => { setBp(b); setShown(40) }}>{t(b)}</button>)}
+      {simple && <button className={'chip nocap' + (moreF ? ' on' : '')} onClick={() => setMoreF(v => !v)}>{t('More filters')}</button>}
     </div>
-    {catOpts.length > 1 && <div className="chips" ref={catStrip} style={{ marginBottom: 8 }}>
+    {showF && catOpts.length > 1 && <div className="chips" ref={catStrip} style={{ marginBottom: 8 }}>
       <button className={'chip nocap' + (!catOn ? ' on' : '')} onClick={() => { setCat(''); setShown(40) }}>{t('Any type')}</button>
       {catOpts.map(x => <button key={x} className={'chip' + (catOn === x ? ' on' : '')} onClick={() => { setCat(x); setShown(40) }}>{t(x)}</button>)}
     </div>}
-    {eqOpts.length > 1 && <div className="chips" ref={eqStrip} style={{ marginBottom: 12 }}>
+    {showF && eqOpts.length > 1 && <div className="chips" ref={eqStrip} style={{ marginBottom: 12 }}>
       <button className={'chip nocap' + (!eqOn ? ' on' : '')} onClick={() => { setEq(''); setShown(40) }}>{t('Any equipment')}</button>
       {eqOpts.map(x => <button key={x} className={'chip' + (eqOn === x ? ' on' : '')} onClick={() => { setEq(x); setShown(40) }}>{t(x)}</button>)}
     </div>}
