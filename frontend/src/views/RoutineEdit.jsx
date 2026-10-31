@@ -2,7 +2,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
-import { exOr } from '../lib/exercises.js'
+import { exOr, EXIDX, EXDB } from '../lib/exercises.js'
+import { suggestBackups } from '../lib/routine-backups.js'
 import { activeProfile, exAvailable } from '../lib/equipment.js'
 import { uid, exerciseNameText } from '../lib/format.js'
 import { t, exerciseNameFor, exerciseNameClass } from '../lib/i18n.js'
@@ -489,6 +490,26 @@ export default function RoutineEdit() {
           if (v) routine.excludeFromProgression = true
           else delete routine.excludeFromProgression
         })} />
+      </Row>
+      {/* Rotate exercises (lib/routine-backups.js): each finished workout moves every exercise
+          to its next backup. Turning it on fills in two backups where an exercise has none. */}
+      <Row icon="shuffle" iconTint="var(--indigo)" title={t('Rotate exercises')}
+        subtitle={t('Each workout swaps every exercise for its next backup, so sessions vary while each lift keeps its own progress.')}>
+        <Switch checked={r.vary === true} onChange={v => {
+          let added = 0
+          update(s => {
+            const routine = s.routines.find(x => x.id === id)
+            if (!v) { delete routine.vary; return }
+            routine.vary = true
+            const ok = e => !profile || exAvailable(s, e)
+            routine.ex.forEach(slot => {
+              if ((slot.subs || []).length || !EXIDX[slot.id]) return
+              const subs = suggestBackups(EXIDX[slot.id], EXDB, 2, ok)
+              if (subs.length) { slot.subs = subs; added++ }
+            })
+          })
+          if (added) toast(t('Backups added: {0}. Tap an exercise to change them.', added))
+        }} />
       </Row>
     </div>
     <div className="small dim" style={{ margin: '-10px 2px 16px' }}>

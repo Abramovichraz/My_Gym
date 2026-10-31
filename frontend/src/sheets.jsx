@@ -20,7 +20,7 @@ import { syncMedia } from './lib/media-sync.js'
 import LineChart from './components/LineChart.jsx'
 import Stepper from './components/Stepper.jsx'
 import { durationSheet } from './components/DurationWheel.jsx'
-import { cleanBackups, withBackups, MAX_BACKUPS, backupSlotConfig } from './lib/routine-backups.js'
+import { cleanBackups, withBackups, MAX_BACKUPS, backupSlotConfig, rotateRoutines } from './lib/routine-backups.js'
 import { normalizeAliases } from './lib/exercise-aliases.js'
 import ExerciseAliasesEditor, { ExerciseAliasesField, ExerciseAliasesLink } from './components/ExerciseAliases.jsx'
 import { SG_NAME_MAX } from './lib/superset-meta.js'
@@ -3785,6 +3785,8 @@ function doFinishWorkout() {
     // A rotation pass this app manages starts its next pass the moment the last session lands
     // (lib/rotation.js). A planner's queue is left alone: it completes and waits for its writer.
     refillAfter(s, w)
+    // Rotate exercises: routines with `vary` on move each slot to its next backup (lib/routine-backups.js).
+    if (!past) rotateRoutines(s, w)
   })
   useStore.getState().autoBackupNow()
   useUI.getState().stopRest()
