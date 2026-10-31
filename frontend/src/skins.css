@@ -65,7 +65,9 @@
   -webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);
 }
 :root[data-skin="aurora"] .btn.primary{
+  background:linear-gradient(135deg,var(--acc),#06b6d4);
   background:linear-gradient(135deg,var(--acc),color-mix(in srgb,var(--acc) 55%,#06b6d4));
+  box-shadow:0 8px 24px -8px var(--acc);
   box-shadow:0 8px 24px -8px color-mix(in srgb,var(--acc) 70%,transparent);
 }
 :root[data-skin="aurora"][data-theme="dark"] #tabbar{
@@ -74,10 +76,13 @@
   border-top:.5px solid rgba(255,255,255,.12);
 }
 :root[data-skin="aurora"] #tabbar button.start .cir{
+  background:linear-gradient(135deg,var(--acc),#06b6d4);
   background:linear-gradient(135deg,var(--acc),color-mix(in srgb,var(--acc) 50%,#06b6d4));
+  box-shadow:0 10px 28px -6px var(--acc);
   box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 18%,transparent),0 10px 28px -6px color-mix(in srgb,var(--acc) 75%,transparent);
 }
 :root[data-skin="aurora"] .hdr h1{
+  background:linear-gradient(100deg,#fff 20%,var(--acc));
   background:linear-gradient(100deg,#fff 20%,color-mix(in srgb,var(--acc) 60%,#fff));
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
@@ -115,7 +120,7 @@
 :root[data-skin="carbon"] .btn{text-transform:uppercase;letter-spacing:.06em;font-weight:800;font-size:15px}
 :root[data-skin="carbon"] .btn.sm,:root[data-skin="carbon"] .btn.xs,
 :root[data-skin="carbon"] .btn.ghost,:root[data-skin="carbon"] .btn.plain{text-transform:none;letter-spacing:0;font-weight:600}
-:root[data-skin="carbon"] .btn.primary{box-shadow:0 0 0 1px color-mix(in srgb,var(--acc) 40%,transparent),0 6px 20px -8px var(--acc)}
+:root[data-skin="carbon"] .btn.primary{box-shadow:0 6px 20px -8px var(--acc);box-shadow:0 0 0 1px color-mix(in srgb,var(--acc) 40%,transparent),0 6px 20px -8px var(--acc)}
 :root[data-skin="carbon"] .card .big{font-weight:900;font-style:italic}
 /* rotated, a 52px square is 73px corner to corner and sat on its label; 40px keeps it at 57 */
 :root[data-skin="carbon"] #tabbar button.start .cir{width:40px;height:40px;border-radius:10px;transform:rotate(45deg);margin:6px 0 10px}
@@ -224,8 +229,8 @@
   @keyframes pm-hop{0%{transform:translateY(0) scale(1)}35%{transform:translateY(-5px) scale(1.15)}100%{transform:none}}
   :root[data-motion="premium"] #tabbar button.on:not(.start) .icn{animation:pm-hop .5s var(--spring)}
   @keyframes pm-breathe{
-    0%,100%{box-shadow:0 6px 18px -4px color-mix(in srgb,var(--acc) 55%,transparent),0 0 0 0 color-mix(in srgb,var(--acc) 40%,transparent)}
-    50%{box-shadow:0 6px 22px -2px color-mix(in srgb,var(--acc) 70%,transparent),0 0 0 9px color-mix(in srgb,var(--acc) 0%,transparent)}
+    0%,100%{box-shadow:0 6px 18px -4px var(--acc);box-shadow:0 6px 18px -4px color-mix(in srgb,var(--acc) 55%,transparent),0 0 0 0 color-mix(in srgb,var(--acc) 40%,transparent)}
+    50%{box-shadow:0 6px 22px -2px var(--acc);box-shadow:0 6px 22px -2px color-mix(in srgb,var(--acc) 70%,transparent),0 0 0 9px color-mix(in srgb,var(--acc) 0%,transparent)}
   }
   :root[data-motion="premium"] #tabbar button.start .cir{animation:pm-breathe 2.8s ease-in-out infinite}
 
@@ -238,7 +243,7 @@
 
   /* logging a set: the tick pops and rings */
   @keyframes pm-check{0%{transform:scale(.6)}55%{transform:scale(1.22)}100%{transform:scale(1)}}
-  @keyframes pm-ring{from{box-shadow:0 0 0 0 color-mix(in srgb,var(--acc) 60%,transparent)}to{box-shadow:0 0 0 14px transparent}}
+  @keyframes pm-ring{from{box-shadow:0 0 0 0 var(--acc);box-shadow:0 0 0 0 color-mix(in srgb,var(--acc) 60%,transparent)}to{box-shadow:0 0 0 14px transparent}}
   :root[data-motion="premium"] .chk.on{animation:pm-check .45s var(--spring),pm-ring .7s ease-out}
   :root[data-motion="premium"] .setrow{transition:opacity .5s var(--ease)}
   :root[data-motion="premium"] .wday .dot.done{animation:pm-check .5s var(--spring) both}
@@ -300,6 +305,7 @@
 
   /* rest timer: the bar shimmers while it runs, the clock ticks */
   :root[data-motion="premium"] #timer .bar i{
+    background:var(--acc);
     background:linear-gradient(90deg,var(--acc),color-mix(in srgb,var(--acc) 50%,#fff),var(--acc));
     background-size:200% 100%;animation:pm-gold 2s linear infinite;
   }
