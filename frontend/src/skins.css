@@ -333,3 +333,39 @@
     }
   }
 }
+
+/* ============================================================ LARGE TITLE BAR
+   components/LargeTitleBar.jsx: the compact title that takes over when the big one scrolls away. */
+.lt-bar{
+  position:fixed;top:0;inset-inline:0;z-index:45;
+  height:calc(var(--sat) + var(--conn) + 44px);padding-top:calc(var(--sat) + var(--conn));
+  display:flex;align-items:center;justify-content:center;pointer-events:none;
+  border-bottom:var(--hair) solid transparent;
+  transition:background var(--fast),border-color var(--fast);
+}
+.lt-bar span{
+  font-size:17px;font-weight:600;letter-spacing:-.02em;color:var(--label);
+  max-width:70%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  opacity:0;transform:translateY(8px);
+  transition:opacity .22s var(--ease),transform .32s cubic-bezier(.2,1.4,.4,1);
+}
+.lt-bar.on{
+  pointer-events:auto;cursor:pointer;border-color:var(--sep-op);
+  background:var(--bg-el);background:color-mix(in srgb,var(--bg-el) 82%,transparent);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+}
+.lt-bar.on span{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.lt-bar span{transition:opacity .15s}}
+
+/* ============================================================ CARBON POLISH */
+:root[data-skin="carbon"] body{font-variant-numeric:tabular-nums}
+:root[data-skin="carbon"] .lt-bar span{text-transform:uppercase;font-style:italic;font-weight:900;letter-spacing:.01em;font-size:16px}
+:root[data-skin="carbon"] .lt-bar.on{border-bottom:2px solid var(--acc)}
+:root[data-skin="carbon"] .chip{border-radius:4px;font-size:13px;font-weight:600;letter-spacing:.02em}
+:root[data-skin="carbon"] .chip.on{font-weight:800;box-shadow:0 4px 14px -6px var(--acc)}
+:root[data-skin="carbon"] .seg{border-radius:6px}
+:root[data-skin="carbon"] .seg-sel{border-radius:4px;box-shadow:inset 0 -2px 0 var(--acc),0 3px 8px rgba(0,0,0,.25)}
+:root[data-skin="carbon"] .sheet .grab{width:28px;height:4px;border-radius:1px;background:var(--acc);transform:skewX(-20deg)}
+:root[data-skin="carbon"] .input:focus{box-shadow:0 0 0 2px var(--acc)}
+:root[data-skin="carbon"] .item:active{background:var(--surface-2)}
+:root[data-skin="carbon"] .tag.acc{border-radius:3px;font-style:italic;font-weight:800}
